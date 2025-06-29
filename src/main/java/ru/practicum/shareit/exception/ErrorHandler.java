@@ -24,4 +24,10 @@ public class ErrorHandler {
     public ErrorResponse handleValidation(ConflictException e) {
         return new ErrorResponse("Conflict", e.getMessage());
     }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public ErrorResponse handlePermission(PermissionException e) {
+        return new ErrorResponse("Forbidden", e.getMessage());
+    }
 }

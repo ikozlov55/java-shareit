@@ -3,6 +3,7 @@ package ru.practicum.shareit.user;
 import org.springframework.stereotype.Repository;
 import ru.practicum.shareit.exception.ConflictException;
 import ru.practicum.shareit.exception.NotFoundException;
+import ru.practicum.shareit.user.model.User;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -40,10 +41,10 @@ public class InMemoryUserRepository implements UserRepository {
         checkUserExists(userId);
         checkEmailUnique(userId, user.getEmail());
         User storedUser = usersMap.get(userId);
-        if (user.getName() != null) {
+        if (user.getName() != null && !user.getName().isBlank()) {
             storedUser.setName(user.getName());
         }
-        if (user.getEmail() != null) {
+        if (user.getEmail() != null && !user.getEmail().isBlank()) {
             storedUser.setEmail(user.getEmail());
         }
         return storedUser;
