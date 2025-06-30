@@ -16,17 +16,16 @@ import java.util.List;
 public class ItemServiceImpl implements ItemService {
     private final ItemRepository itemRepository;
     private final UserRepository userRepository;
-    private final ItemMapper itemMapper;
 
     @Override
     public ItemDto getItemById(long itemId) {
         Item itemModel = itemRepository.getItemById(itemId);
-        return itemMapper.toDto(itemModel);
+        return ItemMapper.toDto(itemModel);
     }
 
     @Override
     public Collection<ItemDto> getUserItems(long userId) {
-        return itemRepository.getUserItems(userId).stream().map(itemMapper::toDto).toList();
+        return itemRepository.getUserItems(userId).stream().map(ItemMapper::toDto).toList();
     }
 
     @Override
@@ -35,7 +34,7 @@ public class ItemServiceImpl implements ItemService {
         if (text == null || text.isBlank()) {
             return List.of();
         }
-        return itemRepository.itemsSearch(userId, text).stream().map(itemMapper::toDto).toList();
+        return itemRepository.itemsSearch(userId, text).stream().map(ItemMapper::toDto).toList();
     }
 
     @Override
@@ -50,14 +49,14 @@ public class ItemServiceImpl implements ItemService {
         if (item.getAvailable() == null) {
             throw new ValidationException("Item availability is required!");
         }
-        Item itemModel = itemMapper.toModel(userId, item);
-        return itemMapper.toDto(itemRepository.createItem(itemModel));
+        Item itemModel = ItemMapper.toModel(userId, item);
+        return ItemMapper.toDto(itemRepository.createItem(itemModel));
     }
 
     @Override
     public ItemDto updateItem(long userId, long itemId, ItemDto item) {
         userRepository.checkUserExists(userId);
-        Item itemModel = itemMapper.toModel(userId, item);
-        return itemMapper.toDto(itemRepository.updateItem(itemId, itemModel));
+        Item itemModel = ItemMapper.toModel(userId, item);
+        return ItemMapper.toDto(itemRepository.updateItem(itemId, itemModel));
     }
 }

@@ -12,13 +12,13 @@ import java.util.Map;
 public class InMemoryUserRepository implements UserRepository {
     private static Long nextEntityId = 1L;
     private final Map<Long, User> usersMap = new HashMap<>();
+    private final Map<String, Long> userEmailToIdMap = new HashMap<>();
 
     @Override
     public void checkUserExists(long userId) {
-        if (usersMap.containsKey(userId)) {
-            return;
+        if (!usersMap.containsKey(userId)) {
+            throw new NotFoundException(String.format("User %d not found!", userId));
         }
-        throw new NotFoundException(String.format("User %d not found!", userId));
     }
 
     @Override
@@ -32,6 +32,7 @@ public class InMemoryUserRepository implements UserRepository {
         checkEmailUnique(null, user.getEmail());
         user.setId(nextEntityId);
         usersMap.put(nextEntityId, user);
+        userEmailToIdMap.put(user.getEmail(), nextEntityId);
         nextEntityId++;
         return user;
     }
@@ -45,7 +46,9 @@ public class InMemoryUserRepository implements UserRepository {
             storedUser.setName(user.getName());
         }
         if (user.getEmail() != null && !user.getEmail().isBlank()) {
+            userEmailToIdMap.remove(storedUser.getEmail());
             storedUser.setEmail(user.getEmail());
+            userEmailToIdMap.put(storedUser.getEmail(), storedUser.getId());
         }
         return storedUser;
     }
@@ -53,17 +56,13 @@ public class InMemoryUserRepository implements UserRepository {
     @Override
     public void deleteUser(long userId) {
         checkUserExists(userId);
-        usersMap.remove(userId);
+        User user = usersMap.remove(userId);
+        userEmailToIdMap.remove(user.getEmail());
     }
 
     private void checkEmailUnique(Long userId, String email) {
-        for (User storedUser : usersMap.values()) {
-            if (!storedUser.getEmail().equals(email)) {
-                continue;
-            }
-            if (userId == null || !userId.equals(storedUser.getId())) {
-                throw new ConflictException(String.format("User with email %s already registered!", email));
-            }
+        if (userEmailToIdMap.containsKey(email) && !userEmailToIdMap.get(email).equals(userId)) {
+            throw new ConflictException(String.format("User with email %s already registered!", email));
         }
     }
 }

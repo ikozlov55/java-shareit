@@ -16,10 +16,9 @@ public class InMemoryItemRepository implements ItemRepository {
 
     @Override
     public void checkItemExists(long itemId) {
-        if (itemsMap.containsKey(itemId)) {
-            return;
+        if (!itemsMap.containsKey(itemId)) {
+            throw new NotFoundException(String.format("Item %d not found!", itemId));
         }
-        throw new NotFoundException(String.format("Item %d not found!", itemId));
     }
 
     @Override
@@ -37,13 +36,9 @@ public class InMemoryItemRepository implements ItemRepository {
     public Collection<Item> itemsSearch(long userId, String text) {
         final String query = text.toLowerCase();
         return itemsMap.values().stream()
-                .filter(x -> {
-                    if (!x.getAvailable()) {
-                        return false;
-                    }
-                    return x.getName().toLowerCase().contains(query) ||
-                            x.getDescription().toLowerCase().contains(query);
-                })
+                .filter(Item::getAvailable)
+                .filter(x -> x.getName().toLowerCase().contains(query) ||
+                        x.getDescription().toLowerCase().contains(query))
                 .toList();
     }
 

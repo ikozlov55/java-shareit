@@ -11,12 +11,11 @@ import ru.practicum.shareit.user.dto.UserMapper;
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
-    private final UserMapper userMapper;
 
     @Override
     public UserDto getUserById(long userId) {
         User userModel = userRepository.getUserById(userId);
-        return userMapper.toDto(userModel);
+        return UserMapper.toDto(userModel);
     }
 
     @Override
@@ -27,14 +26,14 @@ public class UserServiceImpl implements UserService {
         if (user.getEmail() == null || user.getEmail().isBlank()) {
             throw new ValidationException("User email is required!");
         }
-        User userModel = userMapper.toModel(user);
-        return userMapper.toDto(userRepository.createUser(userModel));
+        User userModel = UserMapper.toModel(user);
+        return UserMapper.toDto(userRepository.createUser(userModel));
     }
 
     @Override
     public UserDto updateUser(long userId, UserDto user) {
-        User userModel = userMapper.toModel(user);
-        return userMapper.toDto(userRepository.updateUser(userId, userModel));
+        User userModel = UserMapper.toModel(user);
+        return UserMapper.toDto(userRepository.updateUser(userId, userModel));
     }
 
     @Override
