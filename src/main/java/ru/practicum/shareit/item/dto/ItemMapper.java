@@ -1,21 +1,19 @@
 package ru.practicum.shareit.item.dto;
 
 
-import lombok.Getter;
 import ru.practicum.shareit.item.model.Item;
 
-public final class ItemMapper {
-    @Getter
-    private static final ItemMapper instance = new ItemMapper();
+import java.util.List;
 
-    private ItemMapper() {
-    }
+public final class ItemMapper {
 
     public static ItemDto toDto(Item item) {
-        return new ItemDto(item.getId(), item.getName(), item.getDescription(), item.getAvailable());
+        return new ItemDto(item.getId(), item.getName(), item.getDescription(), item.getAvailable(),
+                null, null, List.of());
     }
 
-    public static Item toModel(long ownerId, ItemDto item) {
-        return new Item(item.getId(), item.getName(), item.getDescription(), item.getAvailable(), ownerId);
+
+    public static Item toModel(ItemDto item) {
+        return new Item(item.getId(), item.getName(), item.getDescription(), item.getAvailable(), null);
     }
 }
