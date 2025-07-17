@@ -11,7 +11,9 @@ import ru.practicum.shareit.user.model.User;
 import java.time.LocalDateTime;
 import java.util.List;
 
-public class BookingSpecification {
+public final class BookingSpecification {
+    private BookingSpecification() {
+    }
 
     public static Specification<Booking> started() {
         return (root, query, builder) -> {
