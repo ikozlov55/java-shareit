@@ -1,12 +1,8 @@
 package ru.practicum.shareit.user.dto;
 
-import lombok.Getter;
 import ru.practicum.shareit.user.model.User;
 
-public class UserMapper {
-    @Getter
-    private static final UserMapper instance = new UserMapper();
-
+public final class UserMapper {
     private UserMapper() {
     }
 
