@@ -13,6 +13,7 @@ import ru.practicum.shareit.exception.ValidationException;
 import ru.practicum.shareit.item.dto.*;
 import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
+import ru.practicum.shareit.request.ItemRequestRepository;
 import ru.practicum.shareit.user.UserRepository;
 import ru.practicum.shareit.user.model.User;
 
@@ -28,6 +29,7 @@ public class ItemServiceImpl implements ItemService {
     private final UserRepository userRepository;
     private final BookingRepository bookingRepository;
     private final CommentRepository commentRepository;
+    private final ItemRequestRepository itemRequestRepository;
 
     @Override
     public ItemDto getItemById(long itemId) {
@@ -85,6 +87,9 @@ public class ItemServiceImpl implements ItemService {
             throw new ValidationException("Item availability is required!");
         }
         Item itemModel = ItemMapper.toModel(item);
+        if (item.getRequestId() != null) {
+            itemModel.setItemRequest(itemRequestRepository.findByIdOrThrow(item.getRequestId()));
+        }
         itemModel.setOwner(user);
         return ItemMapper.toDto(itemRepository.save(itemModel));
     }

@@ -10,12 +10,13 @@ public final class ItemMapper {
     }
 
     public static ItemDto toDto(Item item) {
-        return new ItemDto(item.getId(), item.getName(), item.getDescription(), item.getAvailable(),
+        return new ItemDto(item.getId(), item.getName(), item.getDescription(), item.getAvailable(), null,
                 null, null, List.of());
     }
 
 
     public static Item toModel(ItemDto item) {
-        return new Item(item.getId(), item.getName(), item.getDescription(), item.getAvailable(), null);
+        return new Item(item.getId(), item.getName(), item.getDescription(), item.getAvailable(),
+                null, null);
     }
 }
