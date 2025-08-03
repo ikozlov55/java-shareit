@@ -65,6 +65,7 @@ public class ItemRequestTest {
 
     @Test
     void testGetAllItemRequests() throws Exception {
+        UserDto viewer = testData.randomUser();
         UserDto user1 = testData.randomUser();
         testData.addItemRequest(user1.getId());
         testData.addItemRequest(user1.getId());
@@ -72,7 +73,7 @@ public class ItemRequestTest {
         testData.addItemRequest(user2.getId());
         testData.addItemRequest(user2.getId());
 
-        serverApi.getAllItemRequests(user1.getId())
+        serverApi.getAllItemRequests(viewer.getId())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(greaterThanOrEqualTo(4))));
     }
