@@ -1,6 +1,5 @@
 package ru.practicum.shareit.request;
 
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.Constants;
@@ -22,7 +21,7 @@ public class ItemRequestController {
 
     @PostMapping
     ItemRequestDto createItemRequest(@RequestHeader(Constants.USER_ID_HEADER) long userId,
-                                     @Valid @RequestBody ItemRequestDto request) {
+                                     @RequestBody ItemRequestDto request) {
         return itemRequestService.createItemRequest(userId, request);
     }
 

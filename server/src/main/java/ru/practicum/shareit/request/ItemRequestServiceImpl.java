@@ -9,6 +9,7 @@ import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.user.UserRepository;
 import ru.practicum.shareit.user.model.User;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -30,6 +31,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
         User user = userRepository.findByIdOrThrow(userId);
         ItemRequest requestModel = ItemRequestMapper.toModel(request);
         requestModel.setUser(user);
+        requestModel.setCreated(LocalDateTime.now());
         return ItemRequestMapper.toDto(itemRequestRepository.save(requestModel));
     }
 

@@ -36,7 +36,7 @@ public class UserClient extends BaseClient {
         return patch("/" + userId, user);
     }
 
-    void deleteUser(long userId) {
-        delete("" + userId);
+    public void deleteUser(long userId) {
+        delete("/" + userId);
     }
 }
