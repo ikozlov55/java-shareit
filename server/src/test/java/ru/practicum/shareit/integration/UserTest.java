@@ -38,6 +38,12 @@ public class UserTest {
     }
 
     @Test
+    void testGetUserByNonexistentId() throws Exception {
+        serverApi.getUserById(9999)
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
     void testCreateUser() throws Exception {
         UserDto user = new UserDto(null, faker.name().name(), faker.internet().emailAddress());
 
@@ -46,6 +52,17 @@ public class UserTest {
                 .andExpect(jsonPath("$.id").value(greaterThan(0)))
                 .andExpect(jsonPath("$.name").value(user.getName()))
                 .andExpect(jsonPath("$.email").value(user.getEmail()));
+    }
+
+    @Test
+    void testCannotCreateUserWithTakenEmail() throws Exception {
+        UserDto existingUser = testData.randomUser();
+        UserDto user = new UserDto(null, faker.name().name(), existingUser.getEmail());
+        String error = String.format("User with email %s already registered!", existingUser.getEmail());
+
+        serverApi.createUser(user)
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.reason").value(error));
     }
 
     @Test
@@ -67,6 +84,27 @@ public class UserTest {
     }
 
     @Test
+    void testUpdateUserWithNonexistentId() throws Exception {
+        UserDto user = new UserDto(null, faker.name().name(), faker.internet().emailAddress());
+        serverApi.updateUser(9999, user)
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void testCannotUpdateUserEmailWithTakenEmail() throws Exception {
+        UserDto existingUser = testData.randomUser();
+        UserDto user = testData.randomUser();
+        user.setName(faker.name().name());
+        user.setEmail(existingUser.getEmail());
+        String error = String.format("User with email %s already registered!", existingUser.getEmail());
+
+        serverApi.updateUser(user.getId(), user)
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.reason").value(error));
+    }
+
+
+    @Test
     void testDeleteUser() throws Exception {
         UserDto user = testData.randomUser();
         long userId = user.getId();
@@ -75,5 +113,11 @@ public class UserTest {
         serverApi.getUserById(userId)
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.reason").value(String.format("User %d not found!", userId)));
+    }
+
+    @Test
+    void testDeleteUserByNonexistentId() throws Exception {
+        serverApi.deleteUser(9999)
+                .andExpect(status().isNotFound());
     }
 }

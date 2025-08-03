@@ -7,6 +7,8 @@ import org.springframework.boot.test.context.TestComponent;
 import org.springframework.test.web.servlet.MvcResult;
 import ru.practicum.shareit.booking.dto.BookingCreateDto;
 import ru.practicum.shareit.booking.dto.BookingDto;
+import ru.practicum.shareit.item.dto.CommentCreateDto;
+import ru.practicum.shareit.item.dto.CommentDto;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.request.dto.ItemRequestDto;
 import ru.practicum.shareit.user.dto.UserDto;
@@ -50,12 +52,17 @@ public class TestData {
 
     public BookingDto addCompleteBooking(long bookerId, long ownerId, long itemId) throws Exception {
         BookingCreateDto request = new BookingCreateDto(itemId,
-                LocalDateTime.now().plusSeconds(2),
-                LocalDateTime.now().plusSeconds(4));
+                LocalDateTime.now().plusSeconds(1),
+                LocalDateTime.now().plusSeconds(2));
         BookingDto booking = parse(serverApi.createBooking(bookerId, request).andReturn(), BookingDto.class);
         serverApi.approveBooking(ownerId, booking.getId(), true);
-        TimeUnit.SECONDS.sleep(5);
+        TimeUnit.SECONDS.sleep(2);
         return parse(serverApi.getBookingById(bookerId, booking.getId()).andReturn(), BookingDto.class);
+    }
+
+    public CommentDto addComment(long bookerId, long itemId) throws Exception {
+        CommentCreateDto request = new CommentCreateDto(faker.lorem().paragraph());
+        return parse(serverApi.addComment(bookerId, itemId, request).andReturn(), CommentDto.class);
     }
 
     public ItemRequestDto addItemRequest(long userId) throws Exception {

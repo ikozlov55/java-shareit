@@ -10,7 +10,8 @@ public final class ItemMapper {
     }
 
     public static ItemDto toDto(Item item) {
-        return new ItemDto(item.getId(), item.getName(), item.getDescription(), item.getAvailable(), null,
+        Long requestId = item.getItemRequest() != null ? item.getItemRequest().getId() : null;
+        return new ItemDto(item.getId(), item.getName(), item.getDescription(), item.getAvailable(), requestId,
                 null, null, List.of());
     }
 
