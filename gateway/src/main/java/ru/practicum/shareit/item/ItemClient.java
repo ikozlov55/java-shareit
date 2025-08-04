@@ -16,6 +16,9 @@ import java.util.Map;
 @Service
 public class ItemClient extends BaseClient {
     private static final String API_PREFIX = "/items";
+    private static final String ITEM_ID_TEMPLATE = "/{itemId}";
+    private static final String SEARCH_TEMPLATE = "/search?text={text}";
+    private static final String ADD_COMMENT_TEMPLATE = "/{itemId}/comment";
 
     @Autowired
     public ItemClient(@Value("${shareit-server.url}") String serverUrl, RestTemplateBuilder builder) {
@@ -28,7 +31,7 @@ public class ItemClient extends BaseClient {
     }
 
     public ResponseEntity<Object> getItemById(long itemId) {
-        return get("/" + itemId);
+        return get(ITEM_ID_TEMPLATE, null, Map.of("itemId", itemId));
     }
 
     public ResponseEntity<Object> getUserItems(long userId) {
@@ -36,8 +39,7 @@ public class ItemClient extends BaseClient {
     }
 
     public ResponseEntity<Object> itemsSearch(long userId, String text) {
-        Map<String, Object> parameters = Map.of("text", text);
-        return get("/search?text={text}", userId, parameters);
+        return get(SEARCH_TEMPLATE, userId, Map.of("text", text));
     }
 
     public ResponseEntity<Object> createItem(long userId, ItemDto item) {
@@ -45,11 +47,11 @@ public class ItemClient extends BaseClient {
     }
 
     public ResponseEntity<Object> updateItem(long userId, long itemId, ItemDto item) {
-        return patch("/" + itemId, userId, item);
+        return patch(ITEM_ID_TEMPLATE, userId, Map.of("itemId", itemId), item);
     }
 
     public ResponseEntity<Object> addComment(long userId, long itemId, CommentCreateDto comment) {
-        return post("/" + itemId + "/comment", userId, comment);
+        return post(ADD_COMMENT_TEMPLATE, userId, Map.of("itemId", itemId), comment);
     }
 
 }

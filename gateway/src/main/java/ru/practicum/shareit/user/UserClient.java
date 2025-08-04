@@ -10,9 +10,12 @@ import org.springframework.web.util.DefaultUriBuilderFactory;
 import ru.practicum.shareit.client.BaseClient;
 import ru.practicum.shareit.user.dto.UserDto;
 
+import java.util.Map;
+
 @Service
 public class UserClient extends BaseClient {
     private static final String API_PREFIX = "/users";
+    private static final String USER_ID_TEMPLATE = "/{userId}";
 
     @Autowired
     public UserClient(@Value("${shareit-server.url}") String serverUrl, RestTemplateBuilder builder) {
@@ -25,7 +28,7 @@ public class UserClient extends BaseClient {
     }
 
     public ResponseEntity<Object> getUserById(long userId) {
-        return get("/" + userId);
+        return get(USER_ID_TEMPLATE, null, Map.of("userId", userId));
     }
 
     public ResponseEntity<Object> createUser(UserDto user) {
@@ -33,10 +36,10 @@ public class UserClient extends BaseClient {
     }
 
     public ResponseEntity<Object> updateUser(long userId, UserDto user) {
-        return patch("/" + userId, user);
+        return patch(USER_ID_TEMPLATE, null, Map.of("userId", userId), user);
     }
 
     public void deleteUser(long userId) {
-        delete("/" + userId);
+        delete(USER_ID_TEMPLATE, null, Map.of("userId", userId));
     }
 }

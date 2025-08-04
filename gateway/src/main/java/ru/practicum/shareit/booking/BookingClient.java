@@ -16,6 +16,10 @@ import java.util.Map;
 @Service
 public class BookingClient extends BaseClient {
     private static final String API_PREFIX = "/bookings";
+    private static final String BOOKING_ID_TEMPLATE = "/{bookingId}";
+    private static final String APPROVE_BOOKING_TEMPLATE = "/{bookingId}?approved={approved}";
+    private static final String GET_BOOKINGS_TEMPLATE = "?state={state}";
+    private static final String GET_OWNER_BOOKINGS_TEMPLATE = "/owner?state={state}";
 
     @Autowired
     public BookingClient(@Value("${shareit-server.url}") String serverUrl, RestTemplateBuilder builder) {
@@ -35,20 +39,18 @@ public class BookingClient extends BaseClient {
         Map<String, Object> parameters = Map.of(
                 "bookingId", bookingId,
                 "approved", approved);
-        return patch("/{bookingId}?approved={approved}", userId, parameters, null);
+        return patch(APPROVE_BOOKING_TEMPLATE, userId, parameters, null);
     }
 
     public ResponseEntity<Object> getBookingById(long userId, long bookingId) {
-        return get("/" + bookingId, userId);
+        return get(BOOKING_ID_TEMPLATE, userId, Map.of("bookingId", bookingId));
     }
 
     public ResponseEntity<Object> getBookings(long userId, BookingsState state) {
-        Map<String, Object> parameters = Map.of("state", state.name());
-        return get("?state={state}", userId, parameters);
+        return get(GET_BOOKINGS_TEMPLATE, userId, Map.of("state", state.name()));
     }
 
     public ResponseEntity<Object> getOwnerBookings(long userId, BookingsState state) {
-        Map<String, Object> parameters = Map.of("state", state.name());
-        return get("/owner?state={state}", userId, parameters);
+        return get(GET_OWNER_BOOKINGS_TEMPLATE, userId, Map.of("state", state.name()));
     }
 }
